@@ -1075,97 +1075,191 @@ const EmergencyPage = ({ contacts, setContacts }) => {
               </div>
             </div>
           ))}
-                  </div>
+        </div>
       </GlassCard>
     </div>
   );
 };
 // Settings Page
-const SettingsPage = () => {
+const SettingsPage = ({ userName, setUserName }) => {
+  const [name, setName] = useState(userName);
+  const [email, setEmail] = useState("user@email.com");
+  const [password, setPassword] = useState("");
+  const [notifications, setNotifications] = useState(true);
+
+  const handleSave = () => {
+    setUserName(name);
+
+    alert("Settings updated successfully ✅");
+  };
+
   return (
     <div className="space-y-6">
+
       <GlassCard className="p-6">
-        <h3 className="text-xl font-bold bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">
-          Settings
+        <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent mb-6">
+          Account Settings
         </h3>
 
-        <p className="text-gray-600 mt-4">
-          User preferences and account settings will appear here.
-        </p>
+        <div className="space-y-5">
+
+          {/* Name */}
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              Full Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
+            />
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              Change Password
+            </label>
+            <input
+              type="password"
+              placeholder="Enter new password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
+            />
+          </div>
+
+          {/* Notification Toggle */}
+          <div className="flex items-center justify-between bg-gray-50 p-4 rounded-xl">
+            <div>
+              <p className="font-semibold text-gray-800">Enable Notifications</p>
+              <p className="text-sm text-gray-500">
+                Receive alerts and updates
+              </p>
+            </div>
+
+            <button
+              onClick={() => setNotifications(!notifications)}
+              className={`w-14 h-7 flex items-center rounded-full p-1 transition-all duration-300 ${notifications ? "bg-green-500" : "bg-gray-400"
+                }`}
+            >
+              <div
+                className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-all duration-300 ${notifications ? "translate-x-7" : ""
+                  }`}
+              />
+            </button>
+          </div>
+
+          {/* Save Button */}
+          <button
+            onClick={handleSave}
+            className="w-full py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+          >
+            Save Changes
+          </button>
+
+        </div>
       </GlassCard>
+
     </div>
   );
 };
 
-          // Main App Component
-          const MainApp = ({userName, sendEmergencyAlert}) => {
+
+
+// Main App Component
+const MainApp = ({ userName, setUserName, sendEmergencyAlert }) => {
   const [currentPage, setCurrentPage] = useState("dashboard");
-          const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-          const [emergencyContacts, setEmergencyContacts] = useState([
-          {name: "Raj Kumar", phone: "+919876543210" }
-          ]);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [emergencyContacts, setEmergencyContacts] = useState([
+    { name: "Raj Kumar", phone: "+919876543210" }
+  ]);
 
 
   const renderPage = () => {
     switch (currentPage) {
       case "dashboard": return <DashboardPage setCurrentPage={setCurrentPage} />;
-          case "timeline": return <TimelinePage />;
-          case "lab": return <LabReportPage />;
-          case "maternal": return <MaternalCarePage />;
-          case "child": return <ChildCarePage />;
-          case "settings": return <SettingsPage />;
-          case "emergency":
-          return (
+      case "timeline": return <TimelinePage />;
+      case "lab": return <LabReportPage />;
+      case "maternal": return <MaternalCarePage />;
+      case "child": return <ChildCarePage />;
+      case "settings":
+        return (
+          <SettingsPage
+            userName={userName}
+            setUserName={setUserName}
+          />
+        );
+
+
+
+
+      case "emergency":
+        return (
           <EmergencyPage
             contacts={emergencyContacts}
             setContacts={setEmergencyContacts}
           />
-          );
+        );
 
-          default: return <DashboardPage />;
+      default: return <DashboardPage />;
     }
   };
 
-          return (
-          <div className="flex min-h-screen">
-            <Sidebar
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              isMobileMenuOpen={isMobileMenuOpen}
-              setIsMobileMenuOpen={setIsMobileMenuOpen}
-            />
+  return (
+    <div className="flex min-h-screen">
+      <Sidebar
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        isMobileMenuOpen={isMobileMenuOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+      />
 
-            <div className="flex-1 flex flex-col">
-              <Header
-                setIsMobileMenuOpen={setIsMobileMenuOpen}
-                setCurrentPage={setCurrentPage}
-                userName={userName}
-                sendEmergencyAlert={sendEmergencyAlert}
-                emergencyContacts={emergencyContacts}
-              />
+      <div className="flex-1 flex flex-col">
+        <Header
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          setCurrentPage={setCurrentPage}
+          userName={userName}
+          sendEmergencyAlert={sendEmergencyAlert}
+          emergencyContacts={emergencyContacts}
+        />
 
 
-              <main className="flex-1 overflow-y-auto p-6 relative z-10">
-                <div className="max-w-7xl mx-auto">
-                  {renderPage()}
-                </div>
-              </main>
-            </div>
+        <main className="flex-1 overflow-y-auto p-6 relative z-10">
+          <div className="max-w-7xl mx-auto">
+            {renderPage()}
           </div>
-          );
+        </main>
+      </div>
+    </div>
+  );
 };
 
 
 
-          // ================= HOME SCREEN =================
-          const HomeScreen = ({onContinue}) => {
+// ================= HOME SCREEN =================
+const HomeScreen = ({ onContinue }) => {
   const [animate, setAnimate] = useState(false);
 
   const triggerSlide = () => {
     if (!animate) {
-            setAnimate(true);
+      setAnimate(true);
       setTimeout(() => {
-            onContinue();
+        onContinue();
       }, 350);
     }
   };
@@ -1173,239 +1267,239 @@ const SettingsPage = () => {
   // Listen for ANY key press
   React.useEffect(() => {
     const handleKeyPress = () => {
-            triggerSlide();
+      triggerSlide();
     };
 
-          window.addEventListener("keydown", handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
 
     return () => {
-            window.removeEventListener("keydown", handleKeyPress);
+      window.removeEventListener("keydown", handleKeyPress);
     };
   }, [animate]);
 
-          return (
-          <div
-            onClick={triggerSlide}
-            className={`flex items-center justify-center h-screen cursor-pointer
+  return (
+    <div
+      onClick={triggerSlide}
+      className={`flex items-center justify-center h-screen cursor-pointer
       bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-900
       transition-all duration-500 ease-in-out
       ${animate ? "-translate-y-full opacity-0" : "translate-y-0 opacity-100"}`}
-          >
-            <div className="text-center px-6">
-              <h1 className="text-7xl md:text-9xl font-black tracking-tight text-white drop-shadow-2xl">
-                <span className="bg-gradient-to-r from-white via-violet-200 to-pink-200 bg-clip-text text-transparent">
-                  ArogyaPath
-                </span>
-              </h1>
+    >
+      <div className="text-center px-6">
+        <h1 className="text-7xl md:text-9xl font-black tracking-tight text-white drop-shadow-2xl">
+          <span className="bg-gradient-to-r from-white via-violet-200 to-pink-200 bg-clip-text text-transparent">
+            ArogyaPath
+          </span>
+        </h1>
 
-              <p className="mt-6 text-violet-200 text-lg md:text-xl font-medium tracking-wide">
-                Track. Understand. Act.
-              </p>
-            </div>
-          </div>
-          );
+        <p className="mt-6 text-violet-200 text-lg md:text-xl font-medium tracking-wide">
+          Track. Understand. Act.
+        </p>
+      </div>
+    </div>
+  );
 };
 
-          // ================= SIGNUP PAGE =================
-          const SignupPage = ({onLoginClick, onSuccess}) => {
+// ================= SIGNUP PAGE =================
+const SignupPage = ({ onLoginClick, onSuccess }) => {
   const [name, setName] = useState("");
 
   const handleSignup = (e) => {
-            e.preventDefault();
-          onSuccess(name);
+    e.preventDefault();
+    onSuccess(name);
   };
 
-          return (
-          <div className="flex items-center justify-center h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-pink-100">
-            <div className="backdrop-blur-md bg-white/80 p-10 rounded-3xl shadow-2xl w-96">
-              <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                Create Account
-              </h2>
+  return (
+    <div className="flex items-center justify-center h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-pink-100">
+      <div className="backdrop-blur-md bg-white/80 p-10 rounded-3xl shadow-2xl w-96">
+        <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+          Create Account
+        </h2>
 
-              <form onSubmit={handleSignup} className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
-                />
+        <form onSubmit={handleSignup} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Full Name"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
+          />
 
-                <input
-                  type="email"
-                  placeholder="Email"
-                  required
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
-                />
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
+          />
 
-                <input
-                  type="password"
-                  placeholder="Password"
-                  required
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
-                />
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
+          />
 
-                <button
-                  type="submit"
-                  className="w-full py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-bold"
-                >
-                  Sign Up
-                </button>
-              </form>
+          <button
+            type="submit"
+            className="w-full py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-bold"
+          >
+            Sign Up
+          </button>
+        </form>
 
-              <p className="text-sm text-center mt-4">
-                Already have an account?{" "}
-                <span
-                  onClick={onLoginClick}
-                  className="text-violet-600 font-semibold cursor-pointer"
-                >
-                  Login
-                </span>
-              </p>
-            </div>
-          </div>
-          );
+        <p className="text-sm text-center mt-4">
+          Already have an account?{" "}
+          <span
+            onClick={onLoginClick}
+            className="text-violet-600 font-semibold cursor-pointer"
+          >
+            Login
+          </span>
+        </p>
+      </div>
+    </div>
+  );
 };
-          // ================= LOGIN PAGE =================
-          const LoginPage = ({onSignupClick, onSuccess}) => {
+// ================= LOGIN PAGE =================
+const LoginPage = ({ onSignupClick, onSuccess }) => {
   const [name, setName] = useState("");
 
   const handleLogin = (e) => {
-            e.preventDefault();
-          onSuccess(name);
+    e.preventDefault();
+    onSuccess(name);
   };
 
-          return (
-          <div className="flex items-center justify-center h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-pink-100">
-            <div className="backdrop-blur-md bg-white/80 p-10 rounded-3xl shadow-2xl w-96">
-              <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                Login
-              </h2>
+  return (
+    <div className="flex items-center justify-center h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-pink-100">
+      <div className="backdrop-blur-md bg-white/80 p-10 rounded-3xl shadow-2xl w-96">
+        <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+          Login
+        </h2>
 
-              <form onSubmit={handleLogin} className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
-                />
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Full Name"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
+          />
 
-                <input
-                  type="password"
-                  placeholder="Password"
-                  required
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
-                />
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-violet-500"
+          />
 
-                <button
-                  type="submit"
-                  className="w-full py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-bold"
-                >
-                  Login
-                </button>
-              </form>
+          <button
+            type="submit"
+            className="w-full py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-bold"
+          >
+            Login
+          </button>
+        </form>
 
-              <p className="text-sm text-center mt-4">
-                Don’t have an account?{" "}
-                <span
-                  onClick={onSignupClick}
-                  className="text-violet-600 font-semibold cursor-pointer"
-                >
-                  Sign Up
-                </span>
-              </p>
-            </div>
-          </div>
-          );
+        <p className="text-sm text-center mt-4">
+          Don’t have an account?{" "}
+          <span
+            onClick={onSignupClick}
+            className="text-violet-600 font-semibold cursor-pointer"
+          >
+            Sign Up
+          </span>
+        </p>
+      </div>
+    </div>
+  );
 };
 const App = () => {
   const [authScreen, setAuthScreen] = useState("home");
-          const [userName, setUserName] = useState("");
-          const [toast, setToast] = useState(null);
-              React.useEffect(() => {
-  if (toast) {
-    const timer = setTimeout(() => {
-            setToast(null);
-    }, 3000);
+  const [userName, setUserName] = useState("");
+  const [toast, setToast] = useState(null);
+  React.useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => {
+        setToast(null);
+      }, 3000);
 
-    return () => clearTimeout(timer);
-  }
-}, [toast]);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const sendEmergencyAlert = (contacts) => {
-  if (!contacts || contacts.length === 0) {
+    if (!contacts || contacts.length === 0) {
+      setToast({
+        message: "No emergency contacts added ⚠",
+        type: "error"
+      });
+      return;
+    }
+
+
+    setToast({
+      message: `🚨 Emergency Alert Sent to ${contacts.length} Contact${contacts.length > 1 ? "s" : ""}`,
+      type: "success"
+    });
+  };
+
+  return (
+    <>
+      {authScreen === "home" && (
+        <HomeScreen onContinue={() => setAuthScreen("signup")} />
+      )}
+
+      {authScreen === "signup" && (
+        <SignupPage
+          onLoginClick={() => setAuthScreen("login")}
+          onSuccess={(name) => {
+            setUserName(name);
+            setAuthScreen("app");
             setToast({
-              message: "No emergency contacts added ⚠",
-              type: "error"
+              message: `Welcome ${name} 🎉`,
+              type: "success"
             });
-          return;
-  }
+          }}
+        />
+      )}
 
+      {authScreen === "login" && (
+        <LoginPage
+          onSignupClick={() => setAuthScreen("signup")}
+          onSuccess={(name) => {
+            setUserName(name);
+            setAuthScreen("app");
+            setToast({
+              message: `Welcome Back ${name} 👋`,
+              type: "success"
+            });
+          }}
+        />
+      )}
 
-          setToast({
-            message: `🚨 Emergency Alert Sent to ${contacts.length} Contact${contacts.length > 1 ? "s" : ""}`,
-          type: "success"
-  });
+      {authScreen === "app" && (
+        <MainApp
+          userName={userName}
+          sendEmergencyAlert={sendEmergencyAlert}
+        />
+      )}
+
+      {/* GLOBAL TOAST */}
+      {toast && (
+        <div className={`fixed top-6 right-6 px-6 py-4 rounded-xl shadow-2xl z-[999]
+        ${toast.type === "success"
+            ? "bg-green-500 text-white"
+            : "bg-red-500 text-white"
+          }`}>
+          {toast.message}
+        </div>
+      )}
+    </>
+  );
 };
 
-          return (
-          <>
-            {authScreen === "home" && (
-              <HomeScreen onContinue={() => setAuthScreen("signup")} />
-            )}
-
-            {authScreen === "signup" && (
-              <SignupPage
-                onLoginClick={() => setAuthScreen("login")}
-                onSuccess={(name) => {
-                  setUserName(name);
-                  setAuthScreen("app");
-                  setToast({
-                    message: `Welcome ${name} 🎉`,
-                    type: "success"
-                  });
-                }}
-              />
-            )}
-
-            {authScreen === "login" && (
-              <LoginPage
-                onSignupClick={() => setAuthScreen("signup")}
-                onSuccess={(name) => {
-                  setUserName(name);
-                  setAuthScreen("app");
-                  setToast({
-                    message: `Welcome Back ${name} 👋`,
-                    type: "success"
-                  });
-                }}
-              />
-            )}
-
-            {authScreen === "app" && (
-              <MainApp
-                userName={userName}
-                sendEmergencyAlert={sendEmergencyAlert}
-              />
-            )}
-
-            {/* GLOBAL TOAST */}
-            {toast && (
-              <div className={`fixed top-6 right-6 px-6 py-4 rounded-xl shadow-2xl z-[999]
-        ${toast.type === "success"
-                  ? "bg-green-500 text-white"
-                  : "bg-red-500 text-white"
-                }`}>
-                {toast.message}
-              </div>
-            )}
-          </>
-          );
-          };
 
 
-
-          export default App;
+export default App;
